@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import Header from "./components/Header";
+import AddContact from "./components/AddContact";
+import ContactList from "./components/ContactList";
+import { useEffect , useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const localStorageKey = 'Contact'
+
+  const [Contact, setContact] = useState(() => {
+    return JSON.parse(localStorage.getItem(localStorageKey))
+  ||[]})
+  
+  useEffect(() => {
+    localStorage.setItem(localStorageKey , JSON.stringify(Contact))
+  },[Contact])
+  
+  const addContact = (data) => {
+    setContact([...Contact, { id: uuidv4(), data }]
+    )
+  }
+  const removeContact = (id) => {
+    
+    const updatedList = Contact.filter((val) => {
+      return val.id !== id
+    })
+    setContact(updatedList);
+  
+  }
+
+  
+    return (
+      <>
+        < Header />
+        < AddContact addContact={addContact} />
+        <ContactList Contact={Contact} removeContact={ removeContact} />
+           
+      </>
   );
 }
 
